@@ -240,6 +240,31 @@ server <- function(input, output) {
         theme_classic()
       base_plot
     })
+    
+    output$stepFour <- renderPlot({
+      # draw the best response curves
+      base_plot <- ggplot() +
+        scale_x_continuous(
+          breaks = c(0, 1),
+          labels = c(0, 1)
+        ) +
+        scale_y_continuous(
+          breaks = c(0, 1),
+          labels = c(0, 1)
+        ) +
+        coord_cartesian(
+          xlim = c(0, 1),
+          ylim = c(0, 1),
+          expand = F,
+          clip = "off"
+        ) +
+        labs(
+          x = as.character(input$x_var),
+          y = as.character(input$y_var)
+        ) +
+        theme_classic()
+      base_plot
+    })
 }
 
 # Run the application 
