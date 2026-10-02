@@ -73,14 +73,14 @@ ui <- page_fluid(
         card_header("Step 2: Draw the lines of indifference"),
         sidebar = sidebar(
           sliderInput(
-            "pval",
+            "p_val",
             "Probability of p:",
             min = 0,
             max = 1,
             value = 0.5
           ),
           sliderInput(
-            "qval",
+            "q_val",
             "Probability of q:",
             min = 0,
             max = 1,
@@ -213,7 +213,25 @@ server <- function(input, output) {
           y = as.character(input$y_var)
         ) +
         theme_classic()
-      base_plot
+      base_plot +
+        geom_segment(
+          aes(
+            x = input$p_val,
+            y = 0,
+            xend = input$p_val,
+            yend = 1
+          ),
+          colour = "blue" # check whether there is a colour selector component
+        ) +
+        geom_segment(
+          aes(
+            x = 0,
+            y = input$q_val,
+            xend = 1,
+            yend = input$q_val
+          ),
+          colour = "red"
+        )
     })
     
     output$stepThree <- renderPlot({
