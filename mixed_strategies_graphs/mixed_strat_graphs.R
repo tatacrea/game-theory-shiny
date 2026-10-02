@@ -4,55 +4,57 @@
 #
 
 library(shiny)
+library(bslib)
 library(ggplot2)
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
+ui <- page_fluid(
 
     # Application title
-    titlePanel("Drawing Mixed Strategy Graphs, Step by Step"),
+    title = "Drawing Mixed Strategy Graphs, Step by Step",
 
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            textInput(
-              "xvar",
-              "Name of Agent 1's probability:",
-              value = "p"
-            ),
-            textInput(
-              "yvar",
-              "Name of Agent 2's probability:",
-              value = "q"
-            ),
-            textInput(
-              "s11",
-              "Name of Agent 1's first strategy:",
-              value = "A"
-            ),
-            textInput(
-              "s12",
-              "Name of Agent 2's first strategy:",
-              value = "B"
-            ),
-            textInput(
-              "s21",
-              "Name of Agent 1's first strategy:",
-              value = "a"
-            ),
-            textInput(
-              "s22",
-              "Name of Agent 2's first strategy:",
-              value = "b"
-            )
+    # Show a plot of the generated distribution
+    card(
+      layout_sidebar(
+        card_header("Step 0: Familiarise yourself with the axes"),
+        sidebar = sidebar(
+          textInput(
+            "xvar",
+            "Name of Agent 1's probability:",
+            value = "p"
+          ),
+          textInput(
+            "yvar",
+            "Name of Agent 2's probability:",
+            value = "q"
+          ),
+          hr(), 
+          textInput(
+            "s11",
+            "Name of Agent 1's first strategy:",
+            value = "A"
+          ),
+          textInput(
+            "s12",
+            "Name of Agent 2's first strategy:",
+            value = "B"
+          ),
+          textInput(
+            "s21",
+            "Name of Agent 1's first strategy:",
+            value = "a"
+          ),
+          textInput(
+            "s22",
+            "Name of Agent 2's first strategy:",
+            value = "b"
+          ),
+          open = "always"
         ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("stepZero")
-        )
+        plotOutput("stepZero")
+      )
     )
-)
+  )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
