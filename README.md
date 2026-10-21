@@ -8,7 +8,7 @@ which I made on Shiny.
 ## How do I use this?
 1. Clone this project into RStudio/Positron
 2. Open the project
-3. Navigate to one of the sub-folders containing your visualisation of choice and open the R file inside
+3. Navigate to the sub-folder containing your visualisation of choice and open the R file inside
 4. Run the app. Have fun!
 
 ## On which R/IDE combination have you tested these?
