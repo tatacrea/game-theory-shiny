@@ -2,6 +2,7 @@
 This repo contains interactive visualisation(s) of
 - Mixed-strategy best response curves and the steps to draw them
 - ... (TBD)
+
 which I made on Shiny.
 
 ## How do I use this?
