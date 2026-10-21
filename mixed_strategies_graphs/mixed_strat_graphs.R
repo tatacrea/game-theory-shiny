@@ -780,7 +780,7 @@ server <- function(input, output, session) {
   output$s_1_1 <- renderUI({
     textInput(
       "s_1_1",
-      "Name of Agent 1's strategy when ", input$y_var, " = 1",
+      str_c("Name of Agent 1's strategy when ", input$x_var, " = 1"),
       value = "A"
     )
   })
@@ -788,7 +788,7 @@ server <- function(input, output, session) {
   output$s_1_2 <- renderUI({
     textInput(
       "s_1_2",
-      "Name of Agent 1's strategy when ", input$y_var, " = 0",
+      str_c("Name of Agent 1's strategy when ", input$x_var, " = 0"),
       value = "B"
     )
   })
@@ -796,7 +796,7 @@ server <- function(input, output, session) {
   output$s_2_1 <- renderUI({
     textInput(
       "s_2_1",
-      "Name of Agent 2's strategy when ", input$x_var, " = 1",
+      str_c("Name of Agent 2's strategy when ", input$y_var, " = 1"),
       value = "a"
     )
   })
@@ -804,7 +804,7 @@ server <- function(input, output, session) {
   output$s_2_2 <- renderUI({
     textInput(
       "s_2_2",
-      "Name of Agent 2's strategy when ", input$x_var, " = 0",
+      str_c("Name of Agent 2's strategy when ", input$y_var, " = 0"),
       value = "b"
     )
   })
