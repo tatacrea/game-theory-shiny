@@ -834,7 +834,7 @@ server <- function(input, output, session) {
   output$pure_strat_a_selector <- renderUI({
     selectInput(
       "brs_a",
-      str_c("Agent 1's best response when Agent 2 plays", input$s_2_2),
+      str_c("Agent 1's best response when Agent 2 plays ", input$s_2_2),
       list(
         as.character(input$s_1_1),
         as.character(input$s_1_2)
@@ -845,7 +845,7 @@ server <- function(input, output, session) {
   output$pure_strat_b_selector <- renderUI({
     selectInput(
       "brs_b",
-      str_c("Enter Agent 2's best response when Agent 1 plays", input$s_1_2),
+      str_c("Enter Agent 2's best response when Agent 1 plays ", input$s_1_2),
       list(
         as.character(input$s_2_1),
         as.character(input$s_2_2)
