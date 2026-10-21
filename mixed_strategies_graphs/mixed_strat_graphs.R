@@ -6,7 +6,7 @@
 if (!require(pacman)) install.packages("pacman")
 p_load(shiny, bslib, tidyverse, ggplot2, ggforce)
 
-# Define UI for application that draws multiple best-response curves
+# Define UI for application that draws best-response curves
 ui <- page_fluid(
 
     # Application title
@@ -812,11 +812,11 @@ server <- function(input, output, session) {
     )
   })
 
-  ## Step 2
+  ### Step 2
   output$pure_strat_a_selector <- renderUI({
     selectInput(
       "brs_a",
-      str_c("Enter player A's best response when ", input$y_var, " = 0"),
+      str_c("Enter Agent 1's best response when ", input$y_var, " = 0"),
       list(
         as.character(input$s_1_1),
         as.character(input$s_1_2)
@@ -827,7 +827,7 @@ server <- function(input, output, session) {
   output$pure_strat_b_selector <- renderUI({
     selectInput(
       "brs_b",
-      str_c("Enter player B's best response when ", input$x_var, " = 0"),
+      str_c("Enter Agent 2's best response when ", input$x_var, " = 0"),
       list(
         as.character(input$s_2_1),
         as.character(input$s_2_2)
