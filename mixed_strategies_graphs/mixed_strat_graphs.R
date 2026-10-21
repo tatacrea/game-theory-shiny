@@ -6,7 +6,7 @@
 if (!require(pacman)) install.packages("pacman")
 p_load(shiny, bslib, tidyverse, ggplot2, ggforce)
 
-# Define UI for application that draws a histogram
+# Define UI for application that draws multiple best-response curves
 ui <- page_fluid(
 
     # Application title
