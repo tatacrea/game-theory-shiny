@@ -95,6 +95,7 @@ server <- function(input, output, session) {
   
   ## Output plots ##
   
+  ### Step 0
   output$stepZero <- renderPlot({
     # draw the best response curves
     base_plot <- ggplot() +
@@ -148,6 +149,7 @@ server <- function(input, output, session) {
       )
   })
   
+  ### Step 1
   output$stepOne <- renderPlot({
     # draw the best response curves
     base_plot <- ggplot() +
@@ -193,6 +195,7 @@ server <- function(input, output, session) {
       )
   })
   
+  ### Step 2
   output$stepTwo <- renderPlot({
     # draw the best response curves
     base_plot <- ggplot() +
@@ -410,6 +413,7 @@ server <- function(input, output, session) {
     }
   })
   
+  ### Step 3
   output$stepThree <- renderPlot({
     # draw the best response curves
     base_plot <- ggplot() +
@@ -787,17 +791,7 @@ server <- function(input, output, session) {
   
   ## Input-dependent UI selectors ##
   
-  output$pure_strat_a_selector <- renderUI({
-    selectInput(
-      "brs_a",
-      str_c("Enter player A's best response when ", input$y_var, " = 0"),
-      list(
-        as.character(input$s_1_1),
-        as.character(input$s_1_2)
-      )
-    )
-  })
-  
+  ### Step 1
   output$slider_first_prob <- renderUI({
     sliderInput(
       "p_val",
@@ -818,6 +812,7 @@ server <- function(input, output, session) {
     )
   })
 
+  ## Step 2
   output$pure_strat_a_selector <- renderUI({
     selectInput(
       "brs_a",
