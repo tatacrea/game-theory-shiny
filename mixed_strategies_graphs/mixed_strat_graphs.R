@@ -3,11 +3,8 @@
 # the 'Run App' button above.
 #
 
-library(shiny)
-library(bslib)
-library(tidyverse)
-library(ggplot2)
-library(ggforce)
+if (!require(pacman)) install.packages("pacman")
+p_load(shiny, bslib, tidyverse, ggplot2, ggforce)
 
 # Define UI for application that draws a histogram
 ui <- page_fluid(
