@@ -7,6 +7,7 @@ library(shiny)
 library(bslib)
 library(tidyverse)
 library(ggplot2)
+library(ggforce)
 
 # Define UI for application that draws a histogram
 ui <- page_fluid(
@@ -82,7 +83,7 @@ ui <- page_fluid(
     # Step 3 card
     card(
       layout_sidebar(
-        card_header("Step 3: Mark the pure Nash equilibrium"),
+        card_header("Step 3: Mark the Nash equilibrium"),
         sidebar = sidebar(
           
         ),
@@ -92,8 +93,10 @@ ui <- page_fluid(
   )
 
   
-# Define server logic required to draw a histogram
+# Define plot rendering logic
 server <- function(input, output, session) {
+  
+  ## Output plots ##
   
   output$stepZero <- renderPlot({
     # draw the best response curves
@@ -121,14 +124,14 @@ server <- function(input, output, session) {
       annotate(
         geom = "label",
         x = 0.97,
-        y = -0.05,
+        y = -0.02,
         label = as.character(input$s_1_1),
         colour = "purple"
       ) +
       annotate(
         geom = "label",
         x = 0.03,
-        y = -0.05,
+        y = -0.02,
         label = as.character(input$s_1_2),
         colour = "purple"
       ) +
@@ -233,15 +236,6 @@ server <- function(input, output, session) {
         ),
         linewidth = 1,
         colour = "blue"
-      ) +
-      annotate(
-        "point",
-        x = input$p_val,
-        y = input$q_val,
-        shape = 21,
-        size = 10,
-        stroke = 1,
-        colour = "purple"
       ) +
       theme_classic()
     if (input$brs_a == as.character(input$s_1_1) & input$brs_b == as.character(input$s_2_1)) {
@@ -373,7 +367,7 @@ server <- function(input, output, session) {
           colour = "blue"
         )
       two_plot
-    } else if (input$brs_a == as.character(input$s_1_2) & input$brs_b == as.character(input$s_2_2)) {
+    } else {
       two_plot <- base_plot +
         geom_segment(
           aes(
@@ -416,9 +410,6 @@ server <- function(input, output, session) {
           colour = "blue"
         )
       two_plot
-    } else {
-      two_plot <- base_plot
-      two_plot
     }
   })
   
@@ -443,9 +434,361 @@ server <- function(input, output, session) {
         x = as.character(input$x_var),
         y = as.character(input$y_var)
       ) +
+      geom_segment(
+        aes(
+          x = input$p_val,
+          y = 0,
+          xend = input$p_val,
+          yend = 1
+        ),
+        linewidth = 1.5,
+        colour = "red" # check whether there is a colour selector component
+      ) +
+      geom_segment(
+        aes(
+          x = 0,
+          y = input$q_val,
+          xend = 1,
+          yend = input$q_val
+        ),
+        linewidth = 1,
+        colour = "blue"
+      ) +
       theme_classic()
-    base_plot
+    if (input$brs_a == as.character(input$s_1_1) & input$brs_b == as.character(input$s_2_1)) {
+      two_plot <- base_plot +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 1,
+            xend = input$p_val,
+            yend = 1
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = input$p_val,
+            y = 0,
+            xend = 1,
+            yend = 0
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = 1,
+            y = 0,
+            xend = 1,
+            yend = input$q_val
+          ),
+          linewidth = 1,
+          colour = "blue"
+        ) +
+        geom_segment(
+          aes(
+            x = 0,
+            y = input$q_val,
+            xend = 0,
+            yend = 1
+          ),
+          linewidth = 1,
+          colour = "blue"
+        )
+    } else if (input$brs_a == as.character(input$s_1_1) & input$brs_b == as.character(input$s_2_2)) {
+      two_plot <- base_plot +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 0,
+            xend = input$p_val,
+            yend = 0
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = input$p_val,
+            y = 1,
+            xend = 1,
+            yend = 1
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = 1,
+            y = 0,
+            xend = 1,
+            yend = input$q_val
+          ),
+          linewidth = 1,
+          colour = "blue"
+        ) +
+        geom_segment(
+          aes(
+            x = 0,
+            y = input$q_val,
+            xend = 0,
+            yend = 1
+          ),
+          linewidth = 1,
+          colour = "blue"
+        )
+    } else if (input$brs_a == as.character(input$s_1_2) & input$brs_b == as.character(input$s_2_1)) {
+      two_plot <- base_plot +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 1,
+            xend = input$p_val,
+            yend = 1
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = input$p_val,
+            y = 0,
+            xend = 1,
+            yend = 0
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 0,
+            xend = 0,
+            yend = input$q_val
+          ),
+          linewidth = 1,
+          colour = "blue"
+        ) +
+        geom_segment(
+          aes(
+            x = 1,
+            y = input$q_val,
+            xend = 1,
+            yend = 1
+          ),
+          linewidth = 1,
+          colour = "blue"
+        )
+    } else {
+      two_plot <- base_plot +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 0,
+            xend = input$p_val,
+            yend = 0
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = input$p_val,
+            y = 1,
+            xend = 1,
+            yend = 1
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 0,
+            xend = 0,
+            yend = input$q_val
+          ),
+          linewidth = 1,
+          colour = "blue"
+        ) +
+        geom_segment(
+          aes(
+            x = 1,
+            y = input$q_val,
+            xend = 1,
+            yend = 1
+          ),
+          linewidth = 1,
+          colour = "blue"
+        )
+    }
+    if (input$q_val == 0 & input$brs_b == as.character(input$s_2_1)) {
+      three_plot <- two_plot +
+        geom_ellipse(
+          aes(
+            x0 = (1 + input$p_val) / 2,
+            y0 = 0,
+            a = (1 - input$p_val) / 2 + 0.05,
+            b = 0.1,
+            angle = 0
+          ),
+          linewidth = 1,
+          colour = "purple"
+        )
+      three_plot
+    } else if (input$q_val == 0 & input$brs_b == as.character(input$s_2_2)) {
+      three_plot <- two_plot +
+        geom_ellipse(
+          aes(
+            x0 = input$p_val / 2,
+            y0 = 0,
+            a = input$p_val / 2 + 0.05,
+            b = 0.1,
+            angle = 0
+          ),
+          linewidth = 1,
+          colour = "purple"
+        )
+    } else if (input$q_val == 1 & input$brs_b == as.character(input$s_2_1)) {
+      three_plot <- two_plot +
+        geom_ellipse(
+          aes(
+            x0 = input$p_val / 2,
+            y0 = 1,
+            a = input$p_val / 2 + 0.05,
+            b = 0.1,
+            angle = 0
+          ),
+          linewidth = 1,
+          colour = "purple"
+        )
+    } else if (input$q_val == 1 & input$brs_b == as.character(input$s_2_2)) {
+      three_plot <- two_plot +
+        geom_ellipse(
+          aes(
+            x0 = (1 + input$p_val) / 2,
+            y0 = 1,
+            a = (1 - input$p_val) / 2 + 0.05,
+            b = 0.1,
+            angle = 0
+          ),
+          linewidth = 1,
+          colour = "purple"
+        )
+    } else if (input$p_val == 0 & input$brs_a == as.character(input$s_1_1)) {
+      three_plot <- two_plot +
+        geom_ellipse(
+          aes(
+            x0 = 0,
+            y0 = (1 + input$q_val) / 2,
+            a = 0.05,
+            b = (1 - input$q_val) / 2 + 0.05,
+            angle = 0
+          ),
+          linewidth = 1,
+          colour = "purple"
+        )
+    } else if (input$p_val == 0 & input$brs_a == as.character(input$s_1_2)) {
+      three_plot <- two_plot +
+        geom_ellipse(
+          aes(
+            x0 = 0,
+            y0 = input$q_val / 2,
+            a = 0.05,
+            b = input$q_val / 2 + 0.05,
+            angle = 0
+          ),
+          linewidth = 1,
+          colour = "purple"
+        )
+    } else if (input$p_val == 1 & input$brs_a == as.character(input$s_1_1)) {
+      three_plot <- two_plot +
+        geom_ellipse(
+          aes(
+            x0 = 1,
+            y0 = (1 + input$q_val) / 2,
+            a = 0.05,
+            b = (1 - input$q_val) / 2 + 0.05,
+            angle = 0
+          ),
+          linewidth = 1,
+          colour = "purple"
+        )
+    } else if (input$p_val == 0 & input$brs_a == as.character(input$s_1_1)) {
+      three_plot <- two_plot +
+        geom_ellipse(
+          aes(
+            x0 = 1,
+            y0 = input$q_val / 2,
+            a = 0.05,
+            b = input$q_val / 2 + 0.05,
+            angle = 0
+          ),
+          linewidth = 1,
+          colour = "purple"
+        )
+    } else {
+      three_plot <- two_plot +
+        annotate(
+          "point",
+          x = input$p_val,
+          y = input$q_val,
+          shape = 21,
+          size = 10,
+          stroke = 1,
+          colour = "purple"
+        )
+    }
+    if (input$brs_a == as.character(input$s_1_1) & input$brs_b == as.character(input$s_2_1)) {
+      three_b_plot <- three_plot +
+        annotate(
+          "point",
+          x = 1,
+          y = 0,
+          shape = 21,
+          size = 10,
+          stroke = 1,
+          colour = "purple"
+        ) +
+        annotate(
+          "point",
+          x = 0,
+          y = 1,
+          shape = 21,
+          size = 10,
+          stroke = 1,
+          colour = "purple"
+        )
+      three_b_plot
+    } else if (input$brs_a == as.character(input$s_1_2) & input$brs_b == as.character(input$s_2_2)) {
+      three_b_plot <- three_plot +
+        annotate(
+          "point",
+          x = 0,
+          y = 0,
+          shape = 21,
+          size = 10,
+          stroke = 1,
+          colour = "purple"
+        ) +
+        annotate(
+          "point",
+          x = 1,
+          y = 1,
+          shape = 21,
+          size = 10,
+          stroke = 1,
+          colour = "purple"
+        )
+      three_b_plot
+    } else {
+      three_plot
+    }
   })
+  
+  ## Input-dependent UI selectors ##
   
   output$pure_strat_a_selector <- renderUI({
     selectInput(
@@ -477,7 +820,6 @@ server <- function(input, output, session) {
       value = 0.5
     )
   })
-  
 
   output$pure_strat_a_selector <- renderUI({
     selectInput(
@@ -500,8 +842,6 @@ server <- function(input, output, session) {
       )
     )
   })
-  
-  
 }
 
 # Run the application 
