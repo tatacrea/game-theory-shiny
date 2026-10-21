@@ -17,7 +17,7 @@ which I made on Shiny.
 ## What else are you planning?
 TODO:
 - [x] [Mixed Strat Graphs] Rework Steps
-- [ ] [Mixed Strat Graphs] Work on step 3 (marking equilibria)
+- [x] [Mixed Strat Graphs] Work on step 3 (marking equilibria)
 - [ ] [Mixed Strat Graphs] Decide on whether to switch to [tabs](https://shiny.posit.co/r/layouts/tabs/)
 - [x] [Mixed Strat Graphs] Rename probability slider, either to account for user choice or to remove the need to consider it entirely
 - [ ] [Mixed Strat Graphs] Applying [`reactive`](https://stackoverflow.com/questions/57774556/add-elements-to-a-plot-in-shiny-after-already-rendered) to plot objects
