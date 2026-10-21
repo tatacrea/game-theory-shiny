@@ -27,27 +27,11 @@ ui <- page_fluid(
             "Name of Agent 2's probability:",
             value = "q"
           ),
-          hr(), 
-          textInput(
-            "s_1_1",
-            "Name of Agent 1's first strategy:",
-            value = "A"
-          ),
-          textInput(
-            "s_1_2",
-            "Name of Agent 2's first strategy:",
-            value = "B"
-          ),
-          textInput(
-            "s_2_1",
-            "Name of Agent 1's first strategy:",
-            value = "a"
-          ),
-          textInput(
-            "s_2_2",
-            "Name of Agent 2's first strategy:",
-            value = "b"
-          )
+          hr(),
+          uiOutput("s_1_1"),
+          uiOutput("s_1_2"),
+          uiOutput("s_2_1"),
+          uiOutput("s_2_2")
         ),
         plotOutput("stepZero")
       )
@@ -790,6 +774,40 @@ server <- function(input, output, session) {
   })
   
   ## Input-dependent UI selectors ##
+  
+  ### Step 0
+  
+  output$s_1_1 <- renderUI({
+    textInput(
+      "s_1_1",
+      "Name of Agent 1's strategy when ", input$y_var, " = 1",
+      value = "A"
+    )
+  })
+  
+  output$s_1_2 <- renderUI({
+    textInput(
+      "s_1_2",
+      "Name of Agent 1's strategy when ", input$y_var, " = 0",
+      value = "B"
+    )
+  })
+  
+  output$s_2_1 <- renderUI({
+    textInput(
+      "s_2_1",
+      "Name of Agent 2's strategy when ", input$x_var, " = 1",
+      value = "a"
+    )
+  })
+  
+  output$s_2_2 <- renderUI({
+    textInput(
+      "s_2_2",
+      "Name of Agent 2's strategy when ", input$x_var, " = 0",
+      value = "b"
+    )
+  })
   
   ### Step 1
   output$slider_first_prob <- renderUI({
