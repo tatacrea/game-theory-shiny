@@ -5,6 +5,7 @@
 
 library(shiny)
 library(bslib)
+library(tidyverse)
 library(ggplot2)
 
 # Define UI for application that draws a histogram
@@ -13,7 +14,7 @@ ui <- page_fluid(
     # Application title
     title = "Drawing Mixed Strategy Graphs, Step by Step",
 
-    # Show a plot of the generated distribution
+    # Step 0 card
     card(
       layout_sidebar(
         card_header("Step 0: Familiarise yourself with the axes"),
@@ -53,236 +54,454 @@ ui <- page_fluid(
         plotOutput("stepZero")
       )
     ),
+    
+    # Step 1 card
     card(
       layout_sidebar(
-        card_header("Step 1: Mark any pure-strategy Nash equilibrium"),
+        card_header("Step 1: Draw the lines of indifference"),
         sidebar = sidebar(
-          selectInput(
-            "pure_strategies",
-            "Are there any Nash equilibria in pure strategies?",
-            list("Yes", "No"),
-            selected = "Yes"
-          ),
-          hr()
+          uiOutput("slider_first_prob"),
+          uiOutput("slider_second_prob")
         ),
         plotOutput("stepOne")
       )
     ),
+    
+    # Step 2 card
     card(
       layout_sidebar(
-        card_header("Step 2: Draw the lines of indifference"),
+        card_header("Step 2: Mark all best responses"),
         sidebar = sidebar(
-          sliderInput(
-            "p_val",
-            "Probability of p:",
-            min = 0,
-            max = 1,
-            value = 0.5
-          ),
-          sliderInput(
-            "q_val",
-            "Probability of q:",
-            min = 0,
-            max = 1,
-            value = 0.5
-          )
+          uiOutput("pure_strat_a_selector"),
+          uiOutput("pure_strat_b_selector")
         ),
         plotOutput("stepTwo")
       )
     ),
+    
+    # Step 3 card
     card(
       layout_sidebar(
-        card_header("Step 3: Connect each player's line of indifference to their respective best responses"),
+        card_header("Step 3: Mark the pure Nash equilibrium"),
         sidebar = sidebar(
           
         ),
         plotOutput("stepThree")
       )
-    ),
-    card(
-      layout_sidebar(
-        card_header("Step 4: Mark the mixed-strategies Nash equilibrium"),
-        sidebar = sidebar(
-          
-        ),
-        plotOutput("stepFour")
-      )
     )
   )
 
+  
 # Define server logic required to draw a histogram
-server <- function(input, output) {
-    
-    output$stepZero <- renderPlot({
-        # draw the best response curves
-        base_plot <- ggplot() +
-          scale_x_continuous(
-            breaks = c(0, 1),
-            labels = c(0, 1)
-          ) +
-          scale_y_continuous(
-            breaks = c(0, 1),
-            labels = c(0, 1)
-          ) +
-          coord_cartesian(
-            xlim = c(0, 1),
-            ylim = c(0, 1),
-            expand = F,
-            clip = "off"
-          ) +
-          labs(
-            x = as.character(input$x_var),
-            y = as.character(input$y_var)
-          ) +
-          theme_classic()
-        base_plot +
-          annotate(
-            geom = "label",
-            x = 0.97,
-            y = -0.05,
-            label = as.character(input$s_1_1),
-            colour = "purple"
-          ) +
-          annotate(
-            geom = "label",
-            x = 0.03,
-            y = -0.05,
-            label = as.character(input$s_1_2),
-            colour = "purple"
-          ) +
-          annotate(
-            geom = "label",
-            x = -0.02,
-            y = 0.95,
-            label = as.character(input$s_2_1),
-            colour = "purple"
-          ) +
-          annotate(
-            geom = "label",
-            x = -0.02,
-            y = 0.05,
-            label = as.character(input$s_2_2),
-            colour = "purple"
-          )
-    })
-    
-    output$stepOne <- renderPlot({
-      # draw the best response curves
-      base_plot <- ggplot() +
-        scale_x_continuous(
-          breaks = c(0, 1),
-          labels = c(0, 1)
+server <- function(input, output, session) {
+  
+  output$stepZero <- renderPlot({
+    # draw the best response curves
+    base_plot <- ggplot() +
+      scale_x_continuous(
+        breaks = c(0, 1),
+        labels = c(0, 1)
+      ) +
+      scale_y_continuous(
+        breaks = c(0, 1),
+        labels = c(0, 1)
+      ) +
+      coord_cartesian(
+        xlim = c(0, 1),
+        ylim = c(0, 1),
+        expand = F,
+        clip = "off"
+      ) +
+      labs(
+        x = as.character(input$x_var),
+        y = as.character(input$y_var)
+      ) +
+      theme_classic()
+    base_plot +
+      annotate(
+        geom = "label",
+        x = 0.97,
+        y = -0.05,
+        label = as.character(input$s_1_1),
+        colour = "purple"
+      ) +
+      annotate(
+        geom = "label",
+        x = 0.03,
+        y = -0.05,
+        label = as.character(input$s_1_2),
+        colour = "purple"
+      ) +
+      annotate(
+        geom = "label",
+        x = -0.02,
+        y = 0.95,
+        label = as.character(input$s_2_1),
+        colour = "purple"
+      ) +
+      annotate(
+        geom = "label",
+        x = -0.02,
+        y = 0.05,
+        label = as.character(input$s_2_2),
+        colour = "purple"
+      )
+  })
+  
+  output$stepOne <- renderPlot({
+    # draw the best response curves
+    base_plot <- ggplot() +
+      scale_x_continuous(
+        breaks = c(0, 1),
+        labels = c(0, 1)
+      ) +
+      scale_y_continuous(
+        breaks = c(0, 1),
+        labels = c(0, 1)
+      ) +
+      coord_cartesian(
+        xlim = c(0, 1),
+        ylim = c(0, 1),
+        expand = F,
+        clip = "off"
+      ) +
+      labs(
+        x = as.character(input$x_var),
+        y = as.character(input$y_var)
+      ) +
+      theme_classic()
+    base_plot +
+      geom_segment(
+        aes(
+          x = input$p_val,
+          y = 0,
+          xend = input$p_val,
+          yend = 1
+        ),
+        linewidth = 1.5,
+        colour = "red" # check whether there is a colour selector component
+      ) +
+      geom_segment(
+        aes(
+          x = 0,
+          y = input$q_val,
+          xend = 1,
+          yend = input$q_val
+        ),
+        linewidth = 1,
+        colour = "blue"
+      )
+  })
+  
+  output$stepTwo <- renderPlot({
+    # draw the best response curves
+    base_plot <- ggplot() +
+      scale_x_continuous(
+        breaks = c(0, 1),
+        labels = c(0, 1)
+      ) +
+      scale_y_continuous(
+        breaks = c(0, 1),
+        labels = c(0, 1)
+      ) +
+      coord_cartesian(
+        xlim = c(0, 1),
+        ylim = c(0, 1),
+        expand = F,
+        clip = "off"
+      ) +
+      labs(
+        x = as.character(input$x_var),
+        y = as.character(input$y_var)
+      ) +
+      geom_segment(
+        aes(
+          x = input$p_val,
+          y = 0,
+          xend = input$p_val,
+          yend = 1
+        ),
+        linewidth = 1.5,
+        colour = "red" # check whether there is a colour selector component
+      ) +
+      geom_segment(
+        aes(
+          x = 0,
+          y = input$q_val,
+          xend = 1,
+          yend = input$q_val
+        ),
+        linewidth = 1,
+        colour = "blue"
+      ) +
+      annotate(
+        "point",
+        x = input$p_val,
+        y = input$q_val,
+        shape = 21,
+        size = 10,
+        stroke = 1,
+        colour = "purple"
+      ) +
+      theme_classic()
+    if (input$brs_a == as.character(input$s_1_1) & input$brs_b == as.character(input$s_2_1)) {
+      two_plot <- base_plot +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 1,
+            xend = input$p_val,
+            yend = 1
+          ),
+          linewidth = 1.5,
+          colour = "red"
         ) +
-        scale_y_continuous(
-          breaks = c(0, 1),
-          labels = c(0, 1)
-        ) +
-        coord_cartesian(
-          xlim = c(0, 1),
-          ylim = c(0, 1),
-          expand = F,
-          clip = "off"
-        ) +
-        labs(
-          x = as.character(input$x_var),
-          y = as.character(input$y_var)
-        ) +
-        theme_classic()
-      base_plot
-    })
-    
-    output$stepTwo <- renderPlot({
-      # draw the best response curves
-      base_plot <- ggplot() +
-        scale_x_continuous(
-          breaks = c(0, 1),
-          labels = c(0, 1)
-        ) +
-        scale_y_continuous(
-          breaks = c(0, 1),
-          labels = c(0, 1)
-        ) +
-        coord_cartesian(
-          xlim = c(0, 1),
-          ylim = c(0, 1),
-          expand = F,
-          clip = "off"
-        ) +
-        labs(
-          x = as.character(input$x_var),
-          y = as.character(input$y_var)
-        ) +
-        theme_classic()
-      base_plot +
         geom_segment(
           aes(
             x = input$p_val,
             y = 0,
-            xend = input$p_val,
-            yend = 1
+            xend = 1,
+            yend = 0
           ),
-          colour = "blue" # check whether there is a colour selector component
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = 1,
+            y = 0,
+            xend = 1,
+            yend = input$q_val
+          ),
+          linewidth = 1,
+          colour = "blue"
         ) +
         geom_segment(
           aes(
             x = 0,
             y = input$q_val,
+            xend = 0,
+            yend = 1
+          ),
+          linewidth = 1,
+          colour = "blue"
+        )
+      two_plot
+    } else if (input$brs_a == as.character(input$s_1_1) & input$brs_b == as.character(input$s_2_2)) {
+      two_plot <- base_plot +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 0,
+            xend = input$p_val,
+            yend = 0
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = input$p_val,
+            y = 1,
+            xend = 1,
+            yend = 1
+          ),
+          linewidth = 1.5,
+          colour = "red"
+        ) +
+        geom_segment(
+          aes(
+            x = 1,
+            y = 0,
             xend = 1,
             yend = input$q_val
           ),
-          colour = "red"
+          linewidth = 1,
+          colour = "blue"
+        ) +
+        geom_segment(
+          aes(
+            x = 0,
+            y = input$q_val,
+            xend = 0,
+            yend = 1
+          ),
+          linewidth = 1,
+          colour = "blue"
         )
-    })
-    
-    output$stepThree <- renderPlot({
-      # draw the best response curves
-      base_plot <- ggplot() +
-        scale_x_continuous(
-          breaks = c(0, 1),
-          labels = c(0, 1)
+      two_plot
+    } else if (input$brs_a == as.character(input$s_1_2) & input$brs_b == as.character(input$s_2_1)) {
+      two_plot <- base_plot +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 1,
+            xend = input$p_val,
+            yend = 1
+          ),
+          linewidth = 1.5,
+          colour = "red"
         ) +
-        scale_y_continuous(
-          breaks = c(0, 1),
-          labels = c(0, 1)
+        geom_segment(
+          aes(
+            x = input$p_val,
+            y = 0,
+            xend = 1,
+            yend = 0
+          ),
+          linewidth = 1.5,
+          colour = "red"
         ) +
-        coord_cartesian(
-          xlim = c(0, 1),
-          ylim = c(0, 1),
-          expand = F,
-          clip = "off"
+        geom_segment(
+          aes(
+            x = 0,
+            y = 0,
+            xend = 0,
+            yend = input$q_val
+          ),
+          linewidth = 1,
+          colour = "blue"
         ) +
-        labs(
-          x = as.character(input$x_var),
-          y = as.character(input$y_var)
+        geom_segment(
+          aes(
+            x = 1,
+            y = input$q_val,
+            xend = 1,
+            yend = 1
+          ),
+          linewidth = 1,
+          colour = "blue"
+        )
+      two_plot
+    } else if (input$brs_a == as.character(input$s_1_2) & input$brs_b == as.character(input$s_2_2)) {
+      two_plot <- base_plot +
+        geom_segment(
+          aes(
+            x = 0,
+            y = 0,
+            xend = input$p_val,
+            yend = 0
+          ),
+          linewidth = 1.5,
+          colour = "red"
         ) +
-        theme_classic()
-      base_plot
-    })
-    
-    output$stepFour <- renderPlot({
-      # draw the best response curves
-      base_plot <- ggplot() +
-        scale_x_continuous(
-          breaks = c(0, 1),
-          labels = c(0, 1)
+        geom_segment(
+          aes(
+            x = input$p_val,
+            y = 1,
+            xend = 1,
+            yend = 1
+          ),
+          linewidth = 1.5,
+          colour = "red"
         ) +
-        scale_y_continuous(
-          breaks = c(0, 1),
-          labels = c(0, 1)
+        geom_segment(
+          aes(
+            x = 0,
+            y = 0,
+            xend = 0,
+            yend = input$q_val
+          ),
+          linewidth = 1,
+          colour = "blue"
         ) +
-        coord_cartesian(
-          xlim = c(0, 1),
-          ylim = c(0, 1),
-          expand = F,
-          clip = "off"
-        ) +
-        labs(
-          x = as.character(input$x_var),
-          y = as.character(input$y_var)
-        ) +
-        theme_classic()
-      base_plot
-    })
+        geom_segment(
+          aes(
+            x = 1,
+            y = input$q_val,
+            xend = 1,
+            yend = 1
+          ),
+          linewidth = 1,
+          colour = "blue"
+        )
+      two_plot
+    } else {
+      two_plot <- base_plot
+      two_plot
+    }
+  })
+  
+  output$stepThree <- renderPlot({
+    # draw the best response curves
+    base_plot <- ggplot() +
+      scale_x_continuous(
+        breaks = c(0, 1),
+        labels = c(0, 1)
+      ) +
+      scale_y_continuous(
+        breaks = c(0, 1),
+        labels = c(0, 1)
+      ) +
+      coord_cartesian(
+        xlim = c(0, 1),
+        ylim = c(0, 1),
+        expand = F,
+        clip = "off"
+      ) +
+      labs(
+        x = as.character(input$x_var),
+        y = as.character(input$y_var)
+      ) +
+      theme_classic()
+    base_plot
+  })
+  
+  output$pure_strat_a_selector <- renderUI({
+    selectInput(
+      "brs_a",
+      str_c("Enter player A's best response when ", input$y_var, " = 0"),
+      list(
+        as.character(input$s_1_1),
+        as.character(input$s_1_2)
+      )
+    )
+  })
+  
+  output$slider_first_prob <- renderUI({
+    sliderInput(
+      "p_val",
+      str_c("Probability of ", input$x_var, ":"),
+      min = 0,
+      max = 1,
+      value = 0.5
+    )
+  })
+  
+  output$slider_second_prob <- renderUI({
+    sliderInput(
+      "q_val",
+      str_c("Probability of ", input$y_var, ":"),
+      min = 0,
+      max = 1,
+      value = 0.5
+    )
+  })
+  
+
+  output$pure_strat_a_selector <- renderUI({
+    selectInput(
+      "brs_a",
+      str_c("Enter player A's best response when ", input$y_var, " = 0"),
+      list(
+        as.character(input$s_1_1),
+        as.character(input$s_1_2)
+      )
+    )
+  })
+  
+  output$pure_strat_b_selector <- renderUI({
+    selectInput(
+      "brs_b",
+      str_c("Enter player B's best response when ", input$x_var, " = 0"),
+      list(
+        as.character(input$s_2_1),
+        as.character(input$s_2_2)
+      )
+    )
+  })
+  
+  
 }
 
 # Run the application 
